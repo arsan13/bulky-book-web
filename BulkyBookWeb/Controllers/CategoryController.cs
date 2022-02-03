@@ -80,5 +80,41 @@ namespace BulkyBookWeb.Controllers
             }
             return View(obj);
         }
+
+        //GET
+        public IActionResult Delete(int? id)
+        {
+            if (id == 0 || id == null)
+            {
+                return NotFound();
+            }
+
+            var categoryObjFromDb = _db.Categories.Find(id);
+
+            if (categoryObjFromDb == null)
+            {
+                return NotFound();
+            }
+
+            return View(categoryObjFromDb);
+        }
+
+        //POST
+        [HttpPost]
+        //[ActionName("Delete")] //if asp-action is not given in form of Delete view. To remove method name conflicts
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(int? id)
+        {
+            var categoryObjFromDb = _db.Categories.Find(id);
+
+            if (categoryObjFromDb == null)
+            {
+                return NotFound();
+            }
+
+            _db.Categories.Remove(categoryObjFromDb);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }
